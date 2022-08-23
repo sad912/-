@@ -1,6 +1,8 @@
-class DefaultConfig:
-    data_directory = "./data/dataset_plusOne.npz"
+import numpy as np
 
+
+class DefaultConfig:
+    data = np.load("./data/dataset_plusOne.npz", allow_pickle=True)
     batch_size = 128
     lr = 0.01
 

@@ -1,25 +1,46 @@
-import numpy as np
 from torch.utils.data import Dataset
-from config import DefaultConfig as Config
 import torch
+from config import DefaultConfig as Config
+import matplotlib.pyplot as plt
 
 
-class DataLoader(Dataset):
-    def __init__(self):
-        self.data = np.load(Config.data_directory, allow_pickle=True)
-        self.train = {
-            'features': torch.tensor(self.data['train_x']),
-            'labels': torch.tensor(self.data['train_y'])
-        }
-        self.test = {
-            'features': torch.tensor(self.data['test_x'])
-        }
+class FlowDataset(Dataset):
+    def __init__(self, mode='train'):
+        self.mode = mode
+        self.mean = None
+        self.standard = None
+        # print(Config.data.keys()) # ['train_x', 'train_y', 'test_x']
+        if mode == 'train':
+            self.features = self.pre_process_data(Config.data['train_x'], True)
+            self.labels = self.pre_process_data(Config.data['train_y'])
+        elif mode == 'infer':
+            self.features = self.pre_process_data(Config.data['test_x'])
 
-    def __getitem__(self, index, mode='train'):
+    def __getitem__(self, index):
+        assert index < len(self.features)
         return {
-            'feature': self[mode]['features'][index],
-            'label': self[mode]['labels'][index],
+            'features': self.features[index],
+            'labels': self.labels[index] if self.mode == 'train' else None
         }
 
-    def __len__(self, mode='train'):
-        return len(self[mode]['features'])
+    def pre_process_data(self, data, is_self_mean_and_std=False):
+        tensor_data = FlowDataset.to_tensor(data)
+        mean_tensor = tensor_data.mean()
+        standard_tensor = tensor_data.std()
+        if is_self_mean_and_std:
+            self.mean = mean_tensor.item()
+            self.standard = standard_tensor.item()
+        discrete_normalize_tensor_data = tensor_data.normal_(mean=mean_tensor, std=standard_tensor)
+        return discrete_normalize_tensor_data
+
+    @staticmethod
+    def to_tensor(data):
+        device = torch.device('mps')  # 直接使用 mps，未做 mps 设备和 torch 版本的验证
+        return torch.FloatTensor(data).to(device)
+
+
+# 绘制 features, labels 点图，查看分布情况
+x = FlowDataset().features
+y = FlowDataset().labels
+plt.scatter(x.to('cpu').numpy(), y.to('cpu').numpy(), s=0.1)
+plt.show()
