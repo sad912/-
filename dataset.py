@@ -1,7 +1,6 @@
 from torch.utils.data import Dataset
 import torch
 from config import DefaultConfig as Config
-import matplotlib.pyplot as plt
 
 
 class FlowDataset(Dataset):
@@ -11,8 +10,8 @@ class FlowDataset(Dataset):
         self.standard = None
         # print(Config.data.keys()) # ['train_x', 'train_y', 'test_x']
         if mode == 'train':
-            self.features = self.pre_process_data(Config.data['train_x'], True)
-            self.labels = self.pre_process_data(Config.data['train_y'])
+            self.features = self.pre_process_data(Config.data['train_x'])
+            self.labels = self.pre_process_data(Config.data['train_y'], True)
         elif mode == 'infer':
             self.features = self.pre_process_data(Config.data['test_x'])
 
@@ -38,9 +37,17 @@ class FlowDataset(Dataset):
         device = torch.device('mps')  # 直接使用 mps，未做 mps 设备和 torch 版本的验证
         return torch.FloatTensor(data).to(device)
 
+    @staticmethod
+    def split_data(data, array):
+        return torch.utils.data.random_split(data, array)
+
+    @staticmethod
+    def recover_tensor_data(data, mean, standard):
+        return data * standard + mean
 
 # 绘制 features, labels 点图，查看分布情况
-x = FlowDataset().features
-y = FlowDataset().labels
-plt.scatter(x.to('cpu').numpy(), y.to('cpu').numpy(), s=0.1)
-plt.show()
+# import matplotlib.pyplot as plt
+# x = FlowDataset().features
+# y = FlowDataset().labels
+# plt.scatter(x.to('cpu').numpy(), y.to('cpu').numpy(), s=0.1)
+# plt.show()
