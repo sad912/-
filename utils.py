@@ -23,4 +23,5 @@ def evaluate(model, data_iter):
             labels = model(data)
             loss = loss_func(labels, data["label"])
             loss_total += loss
+    print(len(data_iter))
     return loss_total / len(data_iter)
