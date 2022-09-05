@@ -11,7 +11,7 @@ def save_model(config, best_model):
         shutil.rmtree(config.save_path)
         assert not os.path.exists(config.save_path)
         os.mkdir(config.save_path)
-    torch.save(best_model.state_dict(), config.save_path + '/best_model.pt')
+    torch.save(best_model.state_dict(), config.save_path + 'best_model.pt')
 
 
 def evaluate(model, data_iter):
@@ -23,5 +23,4 @@ def evaluate(model, data_iter):
             labels = model(data)
             loss = loss_func(labels, data["label"])
             loss_total += loss
-    print(len(data_iter))
     return loss_total / len(data_iter)

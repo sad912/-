@@ -14,13 +14,6 @@ class DefaultConfig:
     epoch_count = 1000
     require_improvement = 1000
 
-    save_name = (
-            "LSTM_"
-            + str(layers_count)
-            + "_"
-            + str(epoch_count)
-            + "_"
-            + str(require_improvement)
-    )
-    load_path = "./save_model/baseline"
-    save_path = "./save_model" + "/" + save_name
+    load_path = "./save_model/best_model.pt"
+    save_path = "./save_model/"
+
