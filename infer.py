@@ -14,4 +14,3 @@ def infer(config, model, infer_data_loader, mean, standard):
             labels = np.concatenate([labels, infer_labels])
         labels = labels[config.batch_size:]
     np.savez("pre_y_baseline.npz", test_y=labels)
-    print('123')

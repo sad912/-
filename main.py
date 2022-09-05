@@ -15,7 +15,7 @@ if __name__ == "__main__":
     train_data_loader = DataLoader(train_data, batch_size=Config.batch_size, shuffle=True, drop_last=True)
     eval_data_loader = DataLoader(eval_data, batch_size=Config.batch_size, shuffle=False, drop_last=True)
     test_data_loader = DataLoader(test_data, batch_size=Config.batch_size, shuffle=False, drop_last=True)
-    infer_data_loader = DataLoader(infer_data, batch_size=Config.batch_size, shuffle=False, drop_last=True)
+    infer_data_loader = DataLoader(infer_data, batch_size=Config.batch_size, shuffle=False, drop_last=False)
     model = LSTM(
         Config.features_size,
         Config.hidden_size,
