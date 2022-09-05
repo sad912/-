@@ -17,10 +17,15 @@ class FlowDataset(Dataset):
 
     def __getitem__(self, index):
         assert index < len(self.features)
-        return {
-            'feature': self.features[index],
-            'label': self.labels[index] if self.mode == 'train' else None
-        }
+        if self.mode == 'train':
+            return {
+                'feature': self.features[index],
+                'label': self.labels[index]
+            }
+        else:
+            return {
+                'feature': self.features[index]
+            }
 
     def __len__(self):
         return len(self.features)
